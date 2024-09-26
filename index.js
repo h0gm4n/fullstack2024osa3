@@ -1,7 +1,9 @@
 const express = require('express')
 const app = express()
+const morgan = require('morgan')
 
 app.use(express.json())
+app.use(morgan('tiny'))
 
 let persons = [
     {
@@ -50,7 +52,6 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.post('/api/persons', (request, response) => {
     const body = request.body
-    console.log(body)
     const maxId = persons.length > 0
         ? Math.max(...persons.map(p => Number(p.id)))
         : 0
@@ -73,7 +74,7 @@ app.post('/api/persons', (request, response) => {
 
     persons = persons.concat(person)
 
-    console.log(person)
+    response.status(204).end()
 })
 
 app.delete('/api/persons/:id', (request, response) => {
