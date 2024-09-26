@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
+
 let persons = [
     {
         id: "1",
@@ -44,6 +46,30 @@ app.get('/api/persons/:id', (request, response) => {
     } else {
         response.status(404).end()
     }
+})
+
+app.post('/api/persons', (request, response) => {
+    const body = request.body
+    console.log(body)
+    const maxId = persons.length > 0
+        ? Math.max(...persons.map(p => Number(p.id)))
+        : 0
+
+    if (!body.name || !body.number) {
+        return response.status(400).json({
+            error: 'content missing'
+        })
+    }
+
+    const person = {
+        name: body.name,
+        number: body.number,
+        id: String(maxId + 1)
+    }
+
+    persons = persons.concat(person)
+
+    console.log(person)
 })
 
 app.delete('/api/persons/:id', (request, response) => {
